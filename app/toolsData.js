@@ -168,7 +168,7 @@ export const aiToolsList = [
   { name: "AI Lawyer", category: "Education", desc: "Personal AI legal assistant.", link: "https://ailawyer.pro", icon: "⚖️" },
   { name: "Looka", category: "Design", desc: "AI-powered brand and logo maker.", link: "https://looka.com", icon: "🎨" },
   { name: "Brandmark", category: "Design", desc: "Design a logo with AI in minutes.", link: "https://brandmark.io", icon: "🏢" },
-  { name: "Khroma", category: "Design", desc: "The AI color tool for designers.", link: "https://khroma.co", icon: "🌈" },
+
 // --- SEO & CONTENT OPTIMIZATION (২০টি) ---
   { name: "MarketMuse", category: "Writing", desc: "AI content planning and optimization software.", link: "https://marketmuse.com", icon: "📈" },
   { name: "Clearscope", category: "Writing", desc: "Top-tier SEO content optimization tool.", link: "https://clearscope.io", icon: "🎯" },
