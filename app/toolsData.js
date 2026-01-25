@@ -1,3 +1,4 @@
+// app/toolsData.js
 export const aiToolsList = [
   // --- CHATBOTS & WRITING ---
   { name: "ChatGPT", category: "Writing", desc: "Best for writing, ideas, and general help.", link: "https://chat.openai.com", icon: "🤖" },
@@ -5,7 +6,6 @@ export const aiToolsList = [
   { name: "Google Gemini", category: "Chatbot", desc: "Google's smart multimodal AI assistant.", link: "https://gemini.google.com", icon: "💎" },
   { name: "Perplexity", category: "Search", desc: "Real-time AI search with sources.", link: "https://perplexity.ai", icon: "🔍" },
   { name: "Microsoft Copilot", category: "Chatbot", desc: "AI assistant inside Windows & Office", link: "https://copilot.microsoft.com", icon: "🌊" },
-  { name: "Pi AI", category: "Chatbot", desc: "Personal and friendly AI companion", link: "https://pi.ai", icon: "🫂" },
   { name: "Jasper", category: "Writing", desc: "Professional AI for marketing copy.", link: "https://jasper.ai", icon: "✍️" },
   { name: "Quillbot", category: "Writing", desc: "Best for paraphrasing and grammar.", link: "https://quillbot.com", icon: "✒️" },
   { name: "Grammarly", category: "Writing", desc: "Fix spelling and writing style.", link: "https://grammarly.com", icon: "📝" },
@@ -21,10 +21,9 @@ export const aiToolsList = [
   { name: "Canva Magic", category: "Design", desc: "Design anything with AI tools.", link: "https://canva.com", icon: "🎨" },
   { name: "Adobe Firefly", category: "Image", desc: "Generative AI for creative apps.", link: "https://adobe.com/firefly", icon: "✨" },
   { name: "Lexica", category: "Image", desc: "Search and generate AI art", link: "https://lexica.art", icon: "📷" },
-  { name: "Playground AI", category: "Image", icon: "🎠", desc: "Easy to use online image generator", link: "https://playground.com" },
+  { name: "Playground AI", category: "Image", desc: "Easy to use online image generator", link: "https://playground.com", icon: "🎠" },
   { name: "Remove.bg", category: "Tools", desc: "Remove image backgrounds instantly.", link: "https://remove.bg", icon: "🖼️" },
   { name: "Looka", category: "Design", desc: "Generate professional brand logos.", link: "https://looka.com", icon: "👜" },
-  { name: "Logo.ai", category: "Design", desc: "Create logos in seconds", link: "https://logo.ai", icon: "🆔" },
   { name: "Figma AI", category: "Design", desc: "UI design with AI", link: "https://figma.com", icon: "✒️" },
 
   // --- VIDEO & AUDIO ---
