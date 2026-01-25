@@ -59,7 +59,7 @@ export const aiToolsList = [
   { name: "Udio", category: "Audio", desc: "High-fidelity AI music creation studio.", link: "https://udio.com", icon: "🎼" },
   { name: "Murf AI", category: "Audio", desc: "Professional AI voiceovers for videos.", link: "https://murf.ai", icon: "🎤" },
   { name: "Audo Studio", category: "Audio", desc: "One-click noise removal for audio.", link: "https://audo.ai", icon: "🔇" },
-  { name: "Speechify", category: "Audio", desc: "Turn any text into an AI audiobook.", link: "https://speechify.com", icon: "📚" }
+
 // --- VIDEO & 3D (নতুন ২০টি) ---
   { name: "Kling AI", category: "Video", desc: "High-end cinematic AI video generator.", link: "https://klingai.com", icon: "🐲" },
   { name: "Viggle AI", category: "Video", desc: "Character motion and animation styling AI.", link: "https://viggle.ai", icon: "💃" },
