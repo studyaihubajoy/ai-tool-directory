@@ -1,6 +1,4 @@
 {
-  "name": "study-ai-hub",
-  "version": "1.0.0",
   "dependencies": {
     "next": "latest",
     "react": "latest",
