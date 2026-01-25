@@ -497,6 +497,9 @@ export const aiToolsList = [
   { name: "UserTesting AI", category: "Support", desc: "AI for analyzing user feedback video.", link: "https://usertesting.com", icon: "🎥" },
   { name: "Maze AI", category: "Support", desc: "AI-powered product testing platform.", link: "https://maze.co", icon: "🏗️" },
   { name: "Optimal Workshop", category: "Support", desc: "AI for information architecture study.", link: "https://optimalworkshop.com", icon: "🏛️" },
+  { name: "Khroma", category: "Design", desc: "The AI color tool for designers.", link: "https://khroma.co", icon: "🌈" },
+  { name: "Speechify", category: "Audio", desc: "Turn any text into an AI audiobook.", link: "https://speechify.com", icon: "📚" },
+
 
   // [বি.দ্র.: এখানে ৫০০টি পূর্ণ করতে আরও ৩৫০টি এআই যুক্ত করার ডাটা ফরম্যাট রয়েছে]
   // এর নিচে আপনি একইভাবে আরও ৩০০টি টুল যুক্ত করতে পারবেন কোনো সমস্যা ছাড়াই।
