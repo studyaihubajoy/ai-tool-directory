@@ -1,10 +1,9 @@
-/* app/globals.css */
 body {
-  background: #ffffff;
-  color: #171717;
-  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
+  background: #ffffff;
+  color: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
