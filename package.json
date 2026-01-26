@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.1.4",
+    "dotenv": "^17.2.3",
+    "mongodb": "^7.0.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
