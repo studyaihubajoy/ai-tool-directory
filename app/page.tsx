@@ -1,47 +1,23 @@
-import React from 'react';
-import mongoose from "mongoose";
-import dbConnect from "../lib/mongodb"; 
-import ClientHome from "./ClientHome"; 
-
-export const dynamic = 'force-dynamic';
-
-// Schema definition (যদি আলাদা ফাইলে না থাকে)
-const ToolSchema = new mongoose.Schema({
-  name: String,
-  category: String,
-  desc: String,
-  link: String,
-  icon: String,
-}, { strict: false });
-
-// 'tools' হচ্ছে আপনার MongoDB কালেকশনের নাম। এটি নিশ্চিত করুন।
-const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema, "tools");
-
-export default async function Home() {
-  let tools = [];
-  
-  try {
-    await dbConnect(); 
-    // lean() ব্যবহার করলে পারফরম্যান্স ভালো হয়
-    const data = await Tool.find({}).lean();
-    
-    // ডাটাকে সিরিয়ালাইজ করা (Client Component-এ পাঠানোর জন্য)
-    tools = data.map((item: any) => ({
-      _id: item._id.toString(), // অবজেক্ট আইডি-কে স্ট্রিং করা হয়েছে
-      name: item.name || "Untitled",
-      category: item.category || "General",
-      desc: item.desc || "No description", 
-      link: item.link || "#",
-      icon: item.icon || "🤖" 
-    }));
-
-  } catch (error) {
-    console.error("Database connection error:", error);
-  }
-
-  return (
-    <main>
-      <ClientHome initialTools={tools} />
-    </main>
-  );
-}
+14:18:22.191 
+./app/page.tsx:21:7
+14:18:22.191 
+Type error: Variable 'tools' implicitly has type 'any[]' in some locations where its type cannot be determined.
+14:18:22.191 
+14:18:22.191 
+  19 |
+14:18:22.191 
+  20 | export default async function Home() {
+14:18:22.191 
+> 21 |   let tools = [];
+14:18:22.192 
+     |       ^
+14:18:22.192 
+  22 |   
+14:18:22.192 
+  23 |   try {
+14:18:22.192 
+  24 |     await dbConnect(); 
+14:18:22.221 
+Next.js build worker exited with code: 1 and signal: null
+14:18:22.257 
+Error: Command "npm run build" exited with 1
