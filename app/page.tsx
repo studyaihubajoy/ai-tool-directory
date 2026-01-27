@@ -1,7 +1,7 @@
-import clientPromise from '../lib/mongodb';
-// আগের লাইন: import dbConnect from "@/lib/mongodb";
-import dbConnect from "../lib/mongodb"; // রিলেটিভ পাথ ব্যবহার করুন
+import React from 'react';
 import mongoose from "mongoose";
+import dbConnect from "../lib/mongodb"; // পাথ নিশ্চিত করতে রিলেটিভ পাথ ব্যবহার করা হয়েছে
+import ClientHome from "./ClientHome";   // ইমপোর্ট এরর ঠিক করতে এটি যুক্ত করা হয়েছে
 
 // MongoDB Schema তৈরি (যদি আপনার আলাদা মডেল ফাইল না থাকে)
 const ToolSchema = new mongoose.Schema({}, { strict: false });
@@ -11,13 +11,13 @@ export default async function Home() {
   let tools = [];
   
   try {
-    // ডাটাবেস কানেক্ট করা
+    // ১. ডাটাবেস কানেক্ট করা
     await dbConnect();
     
-    // ডাটাবেস থেকে সব ডাটা আনা (plain object এ কনভার্ট করা হয়েছে)
+    // ২. ডাটাবেস থেকে সব ডাটা আনা
     const data = await Tool.find({}).lean();
     
-    // মঙ্গোডিবি আইডেন্টিফায়ার গুলোকে স্ট্রিং এ কনভার্ট করা (Next.js এর জন্য প্রয়োজন)
+    // ৩. নেক্সট জেএস-এর জন্য ডাটা সিরিয়ালাইজ করা
     tools = JSON.parse(JSON.stringify(data));
   } catch (error) {
     console.error("Database connection error:", error);
@@ -25,7 +25,7 @@ export default async function Home() {
 
   return (
     <main>
-      {/* ClientHome এ ডাটাবেস থেকে পাওয়া ডাটা পাঠিয়ে দেওয়া হচ্ছে */}
+      {/* ৪. ClientHome কম্পোনেন্টে ডাটা পাঠানো হচ্ছে */}
       <ClientHome initialTools={tools} />
     </main>
   );
