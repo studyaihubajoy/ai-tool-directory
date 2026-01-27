@@ -5,22 +5,29 @@ export default function ClientHome({ initialTools = [] }: { initialTools: any[] 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // ১. ক্যাটাগরি লিস্ট তৈরি (ডাটা না থাকলে খালি অ্যারে হ্যান্ডেল করবে)
+  // ১. নিরাপদভাবে ক্যাটাগরি লিস্ট তৈরি
   const categories = useMemo(() => {
-    if (!initialTools || initialTools.length === 0) return ['All'];
-    const uniqueCategories = Array.from(new Set(initialTools.map((tool) => tool.category || 'Uncategorized')));
+    if (!Array.isArray(initialTools) || initialTools.length === 0) return ['All'];
+    
+    const uniqueCategories = Array.from(
+      new Set(initialTools.map((tool) => tool?.category || 'Other'))
+    );
     return ['All', ...uniqueCategories.filter(Boolean)];
   }, [initialTools]);
 
-  // ২. ফিল্টারিং লজিক (নিরাপদ করা হয়েছে যাতে ডাটা মিসিং হলে ক্রাশ না করে)
+  // ২. ফিল্টারিং লজিক - এখানে আপনার পাঠানো ডাটার নাম (DeepSeek, Grok) অনুযায়ী চেক করবে
   const filteredTools = useMemo(() => {
-    return (initialTools || []).filter((tool) => {
-      const name = (tool.name || "").toLowerCase();
-      const desc = (tool.desc || "").toLowerCase();
+    const tools = Array.isArray(initialTools) ? initialTools : [];
+    
+    return tools.filter((tool) => {
+      // ডাটাবেস থেকে আসা ফিল্ডগুলো নিরাপদভাবে পড়া
+      const name = String(tool?.name || "").toLowerCase();
+      const desc = String(tool?.desc || "").toLowerCase();
+      const category = String(tool?.category || "");
       const search = searchQuery.toLowerCase();
 
       const matchesSearch = name.includes(search) || desc.includes(search);
-      const matchesCategory = selectedCategory === 'All' || tool.category === selectedCategory;
+      const matchesCategory = selectedCategory === 'All' || category === selectedCategory;
       
       return matchesSearch && matchesCategory;
     });
@@ -73,20 +80,20 @@ export default function ClientHome({ initialTools = [] }: { initialTools: any[] 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '25px' }}>
           {filteredTools.length > 0 ? (
             filteredTools.map((tool, index) => (
-              <div key={tool._id || index} style={{ 
+              <div key={tool._id?.toString() || index} style={{ 
                 backgroundColor: '#1e293b', padding: '25px', borderRadius: '20px', 
                 border: '1px solid #334155'
               }}>
                 <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>{tool.icon || "🤖"}</div>
-                <h3 style={{ fontSize: '1.4rem', color: '#38bdf8', marginBottom: '10px' }}>{tool.name || "Untitled"}</h3>
+                <h3 style={{ fontSize: '1.4rem', color: '#38bdf8', marginBottom: '10px' }}>{tool.name}</h3>
                 <p style={{ color: '#94a3b8', fontSize: '0.95rem', height: '60px', overflow: 'hidden' }}>
-                  {tool.desc || "No description available."}
+                  {tool.desc}
                 </p>
                 <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', color: '#7dd3fc', background: '#0c4a6e', padding: '4px 10px', borderRadius: '10px' }}>
-                    {tool.category || "General"}
+                    {tool.category}
                   </span>
-                  <a href={tool.link || "#"} target="_blank" rel="noopener noreferrer" style={{
+                  <a href={tool.link} target="_blank" rel="noopener noreferrer" style={{
                     color: '#38bdf8', textDecoration: 'none', fontWeight: 'bold'
                   }}>Visit Site →</a>
                 </div>
@@ -100,7 +107,6 @@ export default function ClientHome({ initialTools = [] }: { initialTools: any[] 
         </div>
       </main>
 
-      {/* Footer */}
       <footer style={{ backgroundColor: '#0f172a', padding: '60px 20px', textAlign: 'center', marginTop: '50px', borderTop: '1px solid #334155' }}>
         <p style={{ color: '#64748b' }}>© 2026 Study AI Hub | Developed by Ajoy Sarkar</p>
       </footer>
