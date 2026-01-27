@@ -1,5 +1,6 @@
 import ClientHome from "./ClientHome";
-import dbConnect from "@/lib/mongodb"; // আপনার কানেকশন পাথ অনুযায়ী চেক করুন
+// আগের লাইন: import dbConnect from "@/lib/mongodb";
+import dbConnect from "../lib/mongodb"; // রিলেটিভ পাথ ব্যবহার করুন
 import mongoose from "mongoose";
 
 // MongoDB Schema তৈরি (যদি আপনার আলাদা মডেল ফাইল না থাকে)
