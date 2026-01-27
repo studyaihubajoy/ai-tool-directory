@@ -3,43 +3,40 @@ import mongoose from "mongoose";
 import dbConnect from "../lib/mongodb"; 
 import ClientHome from "./ClientHome"; 
 
-// ডাটা যেন প্রতিবার ফ্রেশ আসে তার জন্য
+// ডাটা যেন প্রতিবার ফ্রেশ আসে এবং বিল্ড এরর না হয়
 export const dynamic = 'force-dynamic';
 
-// আপনার ডাটাবেসের ফিল্ড অনুযায়ী Schema আপডেট করা হয়েছে
-const ToolSchema = new mongoose.Schema({
-  name: String,
-  category: String,
-  desc: String, // আপনার ডাটাবেসে 'desc' আছে
-  link: String,
-  icon: String  // আপনার ডাটাবেসে 'icon' আছে
-}, { strict: false });
-
+// MongoDB Schema definition
+const ToolSchema = new mongoose.Schema({}, { strict: false });
 const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema);
 
 export default async function Home() {
   let tools = [];
   
   try {
+    // ১. ডাটাবেস কানেক্ট করা
     await dbConnect();
     
-    // ডাটাবেস থেকে ডাটা আনা
+    // ২. ডাটাবেস থেকে সব ডাটা আনা
     const data = await Tool.find({}).lean();
     
-    // ডাটাবেসের 'desc' এবং 'icon' কে কোডের 'description' এবং 'image' এ রূপান্তর
+    // ৩. আপনার ডাটাবেসের 'desc' এবং 'icon' কে কোডের ফরম্যাটে রূপান্তর করা
     tools = data.map((item: any) => ({
       ...item,
       _id: item._id.toString(),
-      description: item.desc || "", // 'desc' থেকে 'description' তৈরি
-      image: item.icon || ""        // 'icon' থেকে 'image' তৈরি
+      // যদি ডাটাবেসে 'description' না থাকে তবে 'desc' থেকে নিবে
+      description: item.description || item.desc || "", 
+      // যদি ডাটাবেসে 'image' না থাকে তবে 'icon' থেকে নিবে
+      image: item.image || item.icon || "" 
     }));
 
   } catch (error) {
-    console.error("Database connection error:", error);
+    console.error("Database connection error in page.tsx:", error);
   }
 
   return (
     <main>
+      {/* ৪. রূপান্তরিত ডাটা ClientHome এ পাঠানো হচ্ছে */}
       <ClientHome initialTools={tools} />
     </main>
   );
