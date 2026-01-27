@@ -1,4 +1,4 @@
-import ClientHome from "./ClientHome";
+import clientPromise from '../lib/mongodb';
 // আগের লাইন: import dbConnect from "@/lib/mongodb";
 import dbConnect from "../lib/mongodb"; // রিলেটিভ পাথ ব্যবহার করুন
 import mongoose from "mongoose";
