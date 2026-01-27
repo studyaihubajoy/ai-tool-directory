@@ -3,11 +3,18 @@ import mongoose from "mongoose";
 import dbConnect from "../lib/mongodb"; 
 import ClientHome from "./ClientHome"; 
 
-// বিল্ড এবং ডাটা রিফ্রেশ এরর এড়াতে এটি অত্যন্ত জরুরি
+// ডাটা যেন প্রতিবার ফ্রেশ আসে তার জন্য
 export const dynamic = 'force-dynamic';
 
-// MongoDB Schema
-const ToolSchema = new mongoose.Schema({}, { strict: false });
+// আপনার ডাটাবেসের ফিল্ড অনুযায়ী Schema আপডেট করা হয়েছে
+const ToolSchema = new mongoose.Schema({
+  name: String,
+  category: String,
+  desc: String, // আপনার ডাটাবেসে 'desc' আছে
+  link: String,
+  icon: String  // আপনার ডাটাবেসে 'icon' আছে
+}, { strict: false });
+
 const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema);
 
 export default async function Home() {
@@ -15,10 +22,18 @@ export default async function Home() {
   
   try {
     await dbConnect();
+    
     // ডাটাবেস থেকে ডাটা আনা
     const data = await Tool.find({}).lean();
-    // Next.js এর জন্য ডাটা সিরিয়ালাইজ করা
-    tools = JSON.parse(JSON.stringify(data));
+    
+    // ডাটাবেসের 'desc' এবং 'icon' কে কোডের 'description' এবং 'image' এ রূপান্তর
+    tools = data.map((item: any) => ({
+      ...item,
+      _id: item._id.toString(),
+      description: item.desc || "", // 'desc' থেকে 'description' তৈরি
+      image: item.icon || ""        // 'icon' থেকে 'image' তৈরি
+    }));
+
   } catch (error) {
     console.error("Database connection error:", error);
   }
