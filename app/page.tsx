@@ -1,48 +1,65 @@
 import React from 'react';
-import dbConnect from "../lib/mongodb"; 
 import mongoose from "mongoose";
+import dbConnect from "../lib/mongodb"; 
 import ClientHome from "./ClientHome"; 
 
 export const dynamic = 'force-dynamic';
 
-// ১. মডেলটি একবারই ডিফাইন করা নিশ্চিত করুন
-const ToolSchema = new mongoose.Schema({
-  name: String,
-  category: String,
-  desc: String,
-  link: String,
-  icon: String,
-}, { strict: false });
+// 1. Data structure define kora
+interface ToolType {
+  _id: string;
+  name: string;
+  category: string;
+  desc: string;
+  link: string;
+  icon: string;
+}
 
-// 'tools' কালেকশনের নাম এখানে সরাসরি দিয়ে দিন
-const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema, "tools");
+// 2. Schema define kora (strict: false dewa hoyeche jate flexible thake)
+const ToolSchema = new mongoose.Schema({}, { strict: false, collection: 'tools' });
+
+// Model check kora
+const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema);
 
 export default async function Home() {
-  let tools = [];
+  let tools: ToolType[] = [];
+  let errorMessage = "";
   
   try {
-    // ২. কানেকশন চেক
-    await dbConnect(); 
+    const conn = await dbConnect(); 
     
-    // ৩. ডাটা ফেচ করা এবং Plain Object-এ রূপান্তর করা
-    const data = await Tool.find({}).lean();
-    
-    // ৪. সিরিয়ালাইজেশন (Next.js এর জন্য প্রয়োজনীয়)
-    tools = JSON.parse(JSON.stringify(data)).map((item: any) => ({
-      _id: item._id?.toString() || Math.random().toString(),
-      name: item.name || "Untitled",
-      category: item.category || "General",
-      desc: item.desc || "No description", 
-      link: item.link || "#",
-      icon: item.icon || "🤖" 
-    }));
-
+    if (!conn) {
+      errorMessage = "Database connect hote pareni. .env.local check korun.";
+    } else {
+      // 3. Data fetch kora
+      const data = await Tool.find({}).lean();
+      
+      if (data && data.length > 0) {
+        tools = (data as any[]).map((item) => ({
+          _id: item._id ? item._id.toString() : Math.random().toString(), 
+          name: item.name || "Untitled",
+          category: item.category || "General",
+          desc: item.desc || "No description", 
+          link: item.link || "#",
+          icon: item.icon || "🤖" 
+        }));
+      } else {
+        errorMessage = "Database connect hoyeche kintu 'tools' collection-e kono data paoya jayni.";
+      }
+    }
   } catch (error: any) {
-    console.error("Error details:", error.message);
+    console.error("Error:", error);
+    errorMessage = "Error hoyeche: " + error.message;
   }
 
   return (
     <main>
+      {/* Jodi kono error thake seta screen-e dekhabe blank na dekhiye */}
+      {errorMessage && (
+        <div style={{ color: 'red', textAlign: 'center', padding: '20px', border: '1px solid red', margin: '10px' }}>
+          {errorMessage}
+        </div>
+      )}
       <ClientHome initialTools={tools} />
     </main>
   );
