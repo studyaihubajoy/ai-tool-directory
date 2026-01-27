@@ -5,24 +5,31 @@ import ClientHome from "./ClientHome";
 
 export const dynamic = 'force-dynamic';
 
+// ১. মডেলটি একবারই ডিফাইন করা নিশ্চিত করুন
+const ToolSchema = new mongoose.Schema({
+  name: String,
+  category: String,
+  desc: String,
+  link: String,
+  icon: String,
+}, { strict: false });
+
+// 'tools' কালেকশনের নাম এখানে সরাসরি দিয়ে দিন
+const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema, "tools");
+
 export default async function Home() {
   let tools = [];
   
   try {
+    // ২. কানেকশন চেক
     await dbConnect(); 
     
-    // ১. আপনার ডাটাবেসের নাম এখানে নিশ্চিত করুন
-    const db = mongoose.connection.useDb("study_ai_hub"); 
+    // ৩. ডাটা ফেচ করা এবং Plain Object-এ রূপান্তর করা
+    const data = await Tool.find({}).lean();
     
-    // ২. আপনার কালেকশনের নাম এখানে দিন (যেমন: 'tools')
-    const collection = db.collection("tools");
-    
-    // ৩. ডাটা ফেচ করা
-    const data = await collection.find({}).toArray();
-    
-    // ৪. ডাটা ফরম্যাট করা
-    tools = data.map((item: any) => ({
-      _id: item._id.toString(),
+    // ৪. সিরিয়ালাইজেশন (Next.js এর জন্য প্রয়োজনীয়)
+    tools = JSON.parse(JSON.stringify(data)).map((item: any) => ({
+      _id: item._id?.toString() || Math.random().toString(),
       name: item.name || "Untitled",
       category: item.category || "General",
       desc: item.desc || "No description", 
@@ -30,10 +37,8 @@ export default async function Home() {
       icon: item.icon || "🤖" 
     }));
 
-    console.log("Total Tools Found:", tools.length);
-
-  } catch (error) {
-    console.error("Database error:", error);
+  } catch (error: any) {
+    console.error("Error details:", error.message);
   }
 
   return (
