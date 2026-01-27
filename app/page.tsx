@@ -1,28 +1,31 @@
-import React from 'react';
-import clientPromise from '@/lib/mongodb';
-import ClientHome from './ClientHome';
+import ClientHome from "./ClientHome";
+import dbConnect from "@/lib/mongodb"; // আপনার কানেকশন পাথ অনুযায়ী চেক করুন
+import mongoose from "mongoose";
 
-async function getTools() {
-  try {
-    const client = await clientPromise;
-    const db = client.db("study_ai_hub");
-    // Database theke sob tools niye asa
-    const tools = await db.collection("tools").find({}).toArray();
-    
-    // MongoDB _id ke string-e convert kora (Next.js er proyojone)
-    return tools.map(tool => ({
-      ...tool,
-      _id: tool._id.toString(),
-    }));
-  } catch (e) {
-    console.error("Database Error:", e);
-    return [];
-  }
-}
+// MongoDB Schema তৈরি (যদি আপনার আলাদা মডেল ফাইল না থাকে)
+const ToolSchema = new mongoose.Schema({}, { strict: false });
+const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema);
 
 export default async function Home() {
-  const aiToolsList = await getTools();
+  let tools = [];
+  
+  try {
+    // ডাটাবেস কানেক্ট করা
+    await dbConnect();
+    
+    // ডাটাবেস থেকে সব ডাটা আনা (plain object এ কনভার্ট করা হয়েছে)
+    const data = await Tool.find({}).lean();
+    
+    // মঙ্গোডিবি আইডেন্টিফায়ার গুলোকে স্ট্রিং এ কনভার্ট করা (Next.js এর জন্য প্রয়োজন)
+    tools = JSON.parse(JSON.stringify(data));
+  } catch (error) {
+    console.error("Database connection error:", error);
+  }
 
-  // Ekhon data database theke ClientHome component-e jabe
-  return <ClientHome initialTools={aiToolsList} />;
+  return (
+    <main>
+      {/* ClientHome এ ডাটাবেস থেকে পাওয়া ডাটা পাঠিয়ে দেওয়া হচ্ছে */}
+      <ClientHome initialTools={tools} />
+    </main>
+  );
 }
