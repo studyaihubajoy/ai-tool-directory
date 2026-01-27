@@ -5,7 +5,6 @@ import ClientHome from "./ClientHome";
 
 export const dynamic = 'force-dynamic';
 
-// ১. MongoDB Schema definition
 const ToolSchema = new mongoose.Schema({}, { strict: false });
 const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema);
 
@@ -14,22 +13,17 @@ export default async function Home() {
   
   try {
     await dbConnect(); //
-    
-    // ২. ডাটাবেস থেকে ডাটা আনা
     const data = await Tool.find({}).lean();
     
-    // ৩. অত্যন্ত গুরুত্বপূর্ণ: ডাটাকে সিরিয়ালাইজ করা
-    // MongoDB-র ObjectId এবং অন্যান্য জটিল ডাটাকে স্ট্রিং-এ রূপান্তর করে
-    const plainData = JSON.parse(JSON.stringify(data));
-    
-    // ৪. আপনার ডাটাবেস ফিল্ডের সাথে ClientHome-এর মিল করা
-    tools = plainData.map((item: any) => ({
+    // ডাটাকে সিরিয়ালাইজ করা এবং সঠিক ফিল্ডে ম্যাপ করা
+    tools = JSON.parse(JSON.stringify(data)).map((item: any) => ({
       _id: item._id,
       name: item.name || "Untitled",
       category: item.category || "General",
-      desc: item.desc || "No description", // 'desc' ব্যবহার করা হয়েছে ClientHome-এ
-      link: item.link || "#",             // 'link' ব্যবহার করা হয়েছে ClientHome-এ
-      icon: item.icon || "🤖"             // 'icon' ব্যবহার করা হয়েছে ClientHome-এ
+      // আপনার ডাটাবেসে 'desc' আছে, তাই এখানে 'desc' ই রাখা হলো
+      desc: item.desc || item.description || "No description", 
+      link: item.link || item.url || "#",
+      icon: item.icon || "🤖" 
     }));
 
   } catch (error) {
@@ -38,7 +32,6 @@ export default async function Home() {
 
   return (
     <main>
-      {/* ৫. প্রসেস করা ডাটা ক্লায়েন্টে পাঠানো */}
       <ClientHome initialTools={tools} />
     </main>
   );
