@@ -1,9 +1,12 @@
 import React from 'react';
 import mongoose from "mongoose";
-import dbConnect from "../lib/mongodb"; // পাথ নিশ্চিত করতে রিলেটিভ পাথ ব্যবহার করা হয়েছে
-import ClientHome from "./ClientHome";   // ইমপোর্ট এরর ঠিক করতে এটি যুক্ত করা হয়েছে
+import dbConnect from "../lib/mongodb";
+import ClientHome from "./ClientHome";
 
-// MongoDB Schema তৈরি (যদি আপনার আলাদা মডেল ফাইল না থাকে)
+// বিল্ড টাইমে ডাটাবেস এরর এড়াতে এই লাইনটি অত্যন্ত জরুরি
+export const dynamic = 'force-dynamic';
+
+// MongoDB Schema (এটি টুলের ডাটা স্ট্রাকচার নিশ্চিত করে)
 const ToolSchema = new mongoose.Schema({}, { strict: false });
 const Tool = mongoose.models.Tool || mongoose.model("Tool", ToolSchema);
 
@@ -14,18 +17,19 @@ export default async function Home() {
     // ১. ডাটাবেস কানেক্ট করা
     await dbConnect();
     
-    // ২. ডাটাবেস থেকে সব ডাটা আনা
+    // ২. ডাটাবেস থেকে সব ডাটা আনা এবং Plain Object এ রূপান্তর
     const data = await Tool.find({}).lean();
     
-    // ৩. নেক্সট জেএস-এর জন্য ডাটা সিরিয়ালাইজ করা
+    // ৩. Next.js যেন ডাটা রিড করতে পারে তাই JSON স্ট্রিং এ কনভার্ট
     tools = JSON.parse(JSON.stringify(data));
   } catch (error) {
-    console.error("Database connection error:", error);
+    // যদি ডাটাবেস কানেক্ট না হয় তবে কনসোলে এরর দেখাবে কিন্তু সাইট ক্রাশ করবে না
+    console.error("Database connection error in page.tsx:", error);
   }
 
   return (
     <main>
-      {/* ৪. ClientHome কম্পোনেন্টে ডাটা পাঠানো হচ্ছে */}
+      {/* ৪. সংগৃহীত ডাটা ClientHome এ পাঠিয়ে দেওয়া হচ্ছে */}
       <ClientHome initialTools={tools} />
     </main>
   );
