@@ -59,7 +59,7 @@ export const metadata: Metadata = {
 
   // Search Console Verification (Bad porechilo)
   verification: {
-    google: 'content="h-hbJRbdNA3r3d8zWq6wjJ5RFKnwNkkjfcEjXF74Ld0', // Google Search Console code ekhane bosaben
+    google: 'h-hbJRbdNA3r3d8zWq6wjJ5RFKnwNkkjfcEjXF74Ld0', // Google Search Console code ekhane bosaben
   },
 };
 
