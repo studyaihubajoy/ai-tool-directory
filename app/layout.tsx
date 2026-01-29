@@ -7,7 +7,7 @@ import Footer from './components/Footer'; // Footer component import
 export const metadata: Metadata = {
   // Purano metadata thik rakha hoyeche
   title: 'Study AI Hub | 450+ Best AI Tools Directory 2026',
-  description: 'Explore the ultimate directory of 150+ AI tools for students, creators, and developers. Find best AI for writing, image generation, video, and coding.',
+  description: 'Explore the ultimate directory of 450+ AI tools for students, creators, and developers. Find best AI for writing, image generation, video, and coding.',
   keywords: 'AI tools directory, best ai tools 2026, free ai tools, study ai hub, ai for students, image generator ai, chatbot list, artificial intelligence tools',
   
   // Canonical URL (Bad porechilo)
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Study AI Hub | Best AI Tools 2026',
-    description: 'Explore 150+ Best AI tools in one directory.',
+    description: 'Explore 450+ Best AI tools in one directory.',
   },
 
   // Indexing Control (Bad porechilo)
