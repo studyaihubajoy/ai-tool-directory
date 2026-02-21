@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link'; // লিঙ্ক ইমপোর্ট করা হয়েছে
 
-// টাইপ ডিফাইন করা
 interface ToolType {
   _id: string;
   name: string;
@@ -15,7 +15,7 @@ export default function ClientHome({ initialTools = [] }: { initialTools: ToolTy
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // ক্যাটাগরি ফিল্টার লিস্ট তৈরি
+  // ক্যাটাগরি ফিল্টার লিস্ট
   const categories = useMemo(() => {
     const cats = (initialTools || []).map((tool) => tool.category || 'General');
     return ['All', ...Array.from(new Set(cats))];
@@ -36,7 +36,7 @@ export default function ClientHome({ initialTools = [] }: { initialTools: ToolTy
   }, [searchQuery, selectedCategory, initialTools]);
 
   return (
-    <div style={{ backgroundColor: '#020617', color: 'white', minHeight: '100vh', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ backgroundColor: '#020617', color: 'white', minHeight: '100vh', padding: '20px' }}>
       <header style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{ color: '#38bdf8', fontSize: '2.5rem' }}>Study AI Hub</h1>
         <p style={{ color: '#94a3b8' }}>Discover {initialTools.length}+ AI Tools</p>
@@ -46,15 +46,9 @@ export default function ClientHome({ initialTools = [] }: { initialTools: ToolTy
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ 
-            padding: '12px 25px', 
-            width: '100%', 
-            maxWidth: '400px', 
-            borderRadius: '25px', 
-            marginTop: '20px',
-            border: '1px solid #334155',
-            backgroundColor: '#1e293b',
-            color: 'white',
-            outline: 'none'
+            padding: '12px 25px', width: '100%', maxWidth: '400px', 
+            borderRadius: '25px', marginTop: '20px', border: '1px solid #334155',
+            backgroundColor: '#1e293b', color: 'white', outline: 'none'
           }}
         />
       </header>
@@ -65,14 +59,9 @@ export default function ClientHome({ initialTools = [] }: { initialTools: ToolTy
             key={cat} 
             onClick={() => setSelectedCategory(cat)} 
             style={{ 
-              padding: '8px 20px', 
-              borderRadius: '20px', 
-              cursor: 'pointer', 
-              border: 'none',
+              padding: '8px 20px', borderRadius: '20px', cursor: 'pointer', border: 'none',
               backgroundColor: selectedCategory === cat ? '#38bdf8' : '#1e293b', 
-              color: selectedCategory === cat ? '#020617' : 'white',
-              fontWeight: 'bold',
-              transition: '0.3s'
+              color: selectedCategory === cat ? '#020617' : 'white', fontWeight: 'bold'
             }}>
             {cat}
           </button>
@@ -80,25 +69,30 @@ export default function ClientHome({ initialTools = [] }: { initialTools: ToolTy
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '25px', maxWidth: '1200px', margin: '0 auto' }}>
-        {filteredTools.length > 0 ? (
-          filteredTools.map((tool) => (
-            <div key={tool._id} style={{ backgroundColor: '#1e293b', padding: '25px', borderRadius: '20px', border: '1px solid #334155', transition: 'transform 0.2s' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>{tool.icon}</div>
-              <h3 style={{ color: '#38bdf8', marginBottom: '10px' }}>{tool.name}</h3>
-              <p style={{ fontSize: '0.9rem', color: '#94a3b8', minHeight: '50px', lineHeight: '1.4' }}>{tool.desc}</p>
+        {filteredTools.map((tool) => (
+          <div key={tool._id} style={{ backgroundColor: '#1e293b', padding: '25px', borderRadius: '20px', border: '1px solid #334155' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>{tool.icon}</div>
+            <h3 style={{ color: '#38bdf8' }}>{tool.name}</h3>
+            <p style={{ fontSize: '0.9rem', color: '#94a3b8', minHeight: '50px' }}>{tool.desc}</p>
+            
+            <div style={{ marginTop: '15px' }}>
+              <Link 
+                href={`/tool/${tool._id}`} 
+                style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 'bold', marginRight: '15px', fontSize: '0.9rem' }}
+              >
+                View Details
+              </Link>
               <a 
                 href={tool.link} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 'bold', display: 'inline-block', marginTop: '15px' }}
+                style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}
               >
                 Visit Site →
               </a>
             </div>
-          ))
-        ) : (
-          <p style={{ textAlign: 'center', gridColumn: '1/-1', color: '#64748b' }}>No AI tools found matching your search.</p>
-        )}
+          </div>
+        ))}
       </div>
     </div>
   );
