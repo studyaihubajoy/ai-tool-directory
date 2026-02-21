@@ -1,3 +1,8 @@
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  // ডাটাবেস থেকে টুলের নাম ফেচ করে এখানে রিটার্ন করুন
+  return { title: `Tool Details - ${id}` }; 
+}
 import React from 'react';
 import mongoose from "mongoose";
 import dbConnect from "@/lib/mongodb"; // পাথটি ঠিক আছে কি না নিশ্চিত করুন
