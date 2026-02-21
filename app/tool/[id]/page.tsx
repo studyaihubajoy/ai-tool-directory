@@ -3,12 +3,25 @@ import mongoose from "mongoose";
 import dbConnect from "@/lib/mongodb";
 import Link from 'next/link';
 
-// ১. মেটাডেটা ফাংশন (এটি ব্রাউজার ট্যাব ঠিক করবে)
+// ১. ডাইনামিক মেটাডেটা ফাংশন (এটি ব্রাউজার ট্যাবে টুলের নাম দেখাবে)
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  let toolName = "Tool Details";
+  
+  try {
+    await dbConnect();
+    const Tool = mongoose.models.Tool || mongoose.model("Tool", new mongoose.Schema({}, { strict: false, collection: 'tools' }));
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      const tool: any = await Tool.findById(id).select('name').lean();
+      if (tool) toolName = tool.name;
+    }
+  } catch (e) {
+    console.error("Metadata error:", e);
+  }
+
   return {
-    title: `AI Tool Details - ${id}`, 
-    description: "Learn more about this amazing AI tool on Study AI Hub."
+    title: `${toolName} - Study AI Hub`,
+    description: `Learn more about ${toolName} on Study AI Hub.`,
   };
 }
 
@@ -25,42 +38,43 @@ export default async function ToolDetails({ params }: { params: Promise<{ id: st
       tool = await Tool.findById(id).lean();
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error fetching tool:", error);
   }
 
   if (!tool) {
     return (
-      <div style={{ color: 'white', textAlign: 'center', marginTop: '100px' }}>
-        <h1>Tool not found!</h1>
-        <Link href="/">Back Home</Link>
+      <div style={{ backgroundColor: '#020617', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <h1 style={{ fontSize: '2rem', marginBottom: '20px' }}>Tool not found!</h1>
+        <Link href="/" style={{ color: '#38bdf8', textDecoration: 'underline' }}>Back Home</Link>
       </div>
     );
   }
 
   return (
-    <div style={{ backgroundColor: '#020617', color: 'white', minHeight: '100vh', padding: '40px 20px' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#1e293b', padding: '30px', borderRadius: '20px', border: '1px solid #334155', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+    <div style={{ backgroundColor: '#020617', color: 'white', minHeight: '100vh', padding: '40px 20px', fontFamily: 'sans-serif' }}>
+      <div style={{ maxWidth: '850px', margin: '0 auto', backgroundColor: '#1e293b', padding: '40px', borderRadius: '24px', border: '1px solid #334155', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
         
-        <Link href="/" style={{ color: '#38bdf8', textDecoration: 'none', marginBottom: '20px', display: 'inline-block', fontWeight: '500' }}>
-          ← Back to Directory
+        <Link href="/" style={{ color: '#38bdf8', textDecoration: 'none', marginBottom: '30px', display: 'inline-flex', alignItems: 'center', fontWeight: '500', fontSize: '1.1rem' }}>
+          <span style={{ marginRight: '8px' }}>←</span> Back to Directory
         </Link>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '25px', marginBottom: '40px' }}>
-          {/* ২. আইকন যদি ইমোজি না হয়ে ইমেজ হয় তবে <img> ব্যবহার করুন */}
-          <div style={{ fontSize: '5rem', background: '#0f172a', padding: '20px', borderRadius: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '30px', marginBottom: '50px', flexWrap: 'wrap' }}>
+          {/* আইকন সেকশন */}
+          <div style={{ fontSize: '5rem', background: '#0f172a', width: '140px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '20px', border: '1px solid #334155' }}>
             {tool.icon || "🤖"}
           </div>
+          
           <div>
-            <h1 style={{ color: '#38bdf8', fontSize: '3rem', margin: '0 0 10px 0' }}>{tool.name}</h1>
-            <span style={{ backgroundColor: '#0ea5e9', padding: '6px 16px', borderRadius: '20px', fontSize: '0.9rem', color: '#020617', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            <h1 style={{ color: '#ffffff', fontSize: '3.5rem', margin: '0 0 10px 0', fontWeight: '800' }}>{tool.name}</h1>
+            <span style={{ backgroundColor: '#0ea5e9', padding: '8px 20px', borderRadius: '30px', fontSize: '1rem', color: '#020617', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
               {tool.category}
             </span>
           </div>
         </div>
 
-        <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ color: '#94a3b8', fontSize: '1.4rem', borderBottom: '2px solid #334155', paddingBottom: '10px', marginBottom: '15px' }}>About this Tool</h2>
-          <p style={{ lineHeight: '1.8', fontSize: '1.2rem', color: '#cbd5e1', whiteSpace: 'pre-wrap' }}>
+        <div style={{ marginBottom: '50px' }}>
+          <h2 style={{ color: '#94a3b8', fontSize: '1.6rem', borderBottom: '2px solid #334155', paddingBottom: '12px', marginBottom: '20px', fontWeight: '600' }}>About this Tool</h2>
+          <p style={{ lineHeight: '1.8', fontSize: '1.25rem', color: '#cbd5e1', whiteSpace: 'pre-wrap' }}>
             {tool.desc}
           </p>
         </div>
@@ -70,10 +84,16 @@ export default async function ToolDetails({ params }: { params: Promise<{ id: st
           target="_blank" 
           rel="noopener noreferrer"
           style={{ 
-            backgroundColor: '#38bdf8', color: '#020617', 
-            padding: '18px 40px', borderRadius: '12px', 
-            textDecoration: 'none', fontWeight: '800', display: 'inline-block',
-            fontSize: '1.1rem', transition: 'transform 0.2s'
+            backgroundColor: '#38bdf8', 
+            color: '#020617', 
+            padding: '20px 50px', 
+            borderRadius: '15px', 
+            textDecoration: 'none', 
+            fontWeight: '800', 
+            display: 'inline-block',
+            fontSize: '1.2rem',
+            boxShadow: '0 10px 20px rgba(56, 189, 248, 0.3)',
+            transition: 'all 0.3s ease'
           }}
         >
           Visit Official Website →
