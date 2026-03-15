@@ -2,21 +2,21 @@ import { MetadataRoute } from 'next';
 import { aiToolsList } from './toolsData';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://ai.shopgb.online'; // আপনার সাইটের মূল লিঙ্ক
+  const baseUrl = 'https://ai.shopgb.online';
 
-  // ১. প্রতিটি টুলের জন্য আলাদা SEO লিঙ্ক তৈরি (Tool Pages)
+  // টুলগুলোর জন্য ক্লিন ইউআরএল (যদি আপনার রাউটিং সাপোর্ট করে)
   const toolEntries = aiToolsList.map((tool) => ({
-    url: `${baseUrl}/?tool=${encodeURIComponent(tool.name.toLowerCase().replace(/ /g, '-'))}`,
-    lastModified: new Date(),
+    // পরামর্শ: কুয়েরি প্যারামিটার (?) এর বদলে স্লাশ (/) ব্যবহার করা ভালো
+    url: `${baseUrl}/tool/${tool.name.toLowerCase().replace(/ /g, '-')}`, 
+    lastModified: new Date('2026-02-28'), // ফিক্সড ডেট বা টুলের আপডেটেড ডেট দিন
     changeFrequency: 'weekly' as const,
-    priority: 0.8, // টুলগুলোর জন্য হাই প্রায়োরিটি
+    priority: 0.8,
   }));
 
-  // ২. প্রতিটি ক্যাটাগরির জন্য লিঙ্ক তৈরি (Category Pages)
   const categories = [...new Set(aiToolsList.map(t => t.category.toLowerCase()))];
   const categoryEntries = categories.map((cat) => ({
-    url: `${baseUrl}/?category=${cat}`,
-    lastModified: new Date(),
+    url: `${baseUrl}/category/${cat}`,
+    lastModified: new Date('2026-02-28'),
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
@@ -26,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
-      priority: 1.0, // হোমপেজ সবসময় ১ নম্বর প্রায়োরিটি
+      priority: 1.0,
     },
     ...toolEntries,
     ...categoryEntries,
