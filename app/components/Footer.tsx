@@ -12,7 +12,10 @@ export default function Footer() {
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <h3 style={{ color: 'white', marginBottom: '10px' }}>Study AI Hub</h3>
-        <p style={{ fontSize: '0.9rem' }}>২০২৬ সালের সেরা এআই টুল ডিরেক্টরি। আপনার কাজকে সহজ করতে আমরা সেরা টুলগুলো বাছাই করি।</p>
+        {/* বাংলা লেখা পরিবর্তন করে ইংরেজি করা হয়েছে */}
+        <p style={{ fontSize: '0.9rem' }}>
+          The Best AI Tools Directory of 2026. We curate the top tools to simplify your workflow.
+        </p>
         
         <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center', gap: '20px' }}>
           <a href="#" style={{ color: '#38bdf8', textDecoration: 'none' }}>Twitter</a>

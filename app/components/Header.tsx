@@ -21,6 +21,8 @@ export default function Header() {
         <ul style={{ listStyle: 'none', display: 'flex', gap: '20px', margin: 0 }}>
           <li><a href="/" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: '500' }}>Home</a></li>
           <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Submit Tool</a></li>
+          {/* আপনি চাইলে আরও একটি মেনু যোগ করতে পারেন, যেমন: Categories */}
+          <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Categories</a></li>
         </ul>
       </nav>
     </header>
