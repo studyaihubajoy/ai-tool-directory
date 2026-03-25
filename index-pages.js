@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
 
-const keyPath = path.join('C:', 'ai', 'vivid-env-444812-b2-aac6c7c5e182.json');
+const keyPath = path.join('C:', 'ai', 'vivid-env-444812-b2-474ae4debff9.json');
 // কত নম্বর লিঙ্ক থেকে শুরু হবে তা এই ফাইলে সেভ থাকবে
 const progressFile = path.join('C:', 'ai', 'progress.txt');
 
