@@ -4,19 +4,12 @@ const fs = require('fs');
 const path = require('path');
 
 const keyPath = path.join('C:', 'ai', 'vivid-env-444812-b2-474ae4debff9.json');
-// কত নম্বর লিঙ্ক থেকে শুরু হবে তা এই ফাইলে সেভ থাকবে
 const progressFile = path.join('C:', 'ai', 'progress.txt');
 
 async function startIndexing() {
   let client;
   try {
-    if (!fs.existsSync(keyPath)) {
-      console.error("Error: JSON ফাইলটি পাওয়া যায়নি!");
-      return;
-    }
     const key = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
-
-    // কতগুলো স্কিপ করতে হবে তা ফাইল থেকে পড়া
     let skipCount = 0;
     if (fs.existsSync(progressFile)) {
       skipCount = parseInt(fs.readFileSync(progressFile, 'utf8')) || 0;
@@ -32,7 +25,7 @@ async function startIndexing() {
     client = await MongoClient.connect(uri);
     const db = client.db('study_ai_hub');
     
-    // আগের দিনের ২০০টির পর থেকে পরবর্তী ২০০টি তুলবে
+    // ডাটাবেজ থেকে ২০০টি করে টুল নেওয়া হচ্ছে
     const tools = await db.collection('tools').find({}).skip(skipCount).limit(200).toArray(); 
 
     if (tools.length === 0) {
@@ -46,7 +39,10 @@ async function startIndexing() {
 
     let processedThisTime = 0;
     for (const tool of tools) {
-      const url = `https://ai.shopgb.online/details/${tool.slug || tool._id}`; 
+      // SEO ফ্রেন্ডলি ইউআরএল তৈরি (যেমন: details/chatgpt)
+      const slug = tool.slug || (tool.name ? tool.name.toLowerCase().replace(/ /g, '-') : tool._id);
+      const url = `https://ai.shopgb.online/details/${slug}`; 
+
       try {
         await indexing.urlNotifications.publish({
           auth: jwtClient,
@@ -63,7 +59,6 @@ async function startIndexing() {
       }
     }
 
-    // পরবর্তী দিনের জন্য নতুন পজিশন সেভ করে রাখা
     fs.writeFileSync(progressFile, (skipCount + processedThisTime).toString());
     console.log(`\nNext time will start from index: ${skipCount + processedThisTime}`);
 
